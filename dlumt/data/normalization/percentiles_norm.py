@@ -31,11 +31,21 @@ class PercentilesNormalizer:
             AssertionError: If min_percentiles or max_percentiles have incorrect dtype or shape.
         """
 
-        assert min_percentiles.dtype == np.float32
-        assert max_percentiles.dtype == np.float32
-        assert min_percentiles.ndim == 1
-        assert max_percentiles.ndim == 1
-        assert min_percentiles.shape == max_percentiles.shape
+        assert (
+            min_percentiles.dtype == np.float32
+        ), f"min_percentiles must be of type FP32, got {min_percentiles.dtype}"
+        assert (
+            max_percentiles.dtype == np.float32
+        ), f"max_percentiles must be of type FP32, got {max_percentiles.dtype}"
+        assert (
+            min_percentiles.ndim == 1
+        ), f"min_percentiles must be 1 dimensional, got {min_percentiles.ndim} dimensional"
+        assert (
+            max_percentiles.ndim == 1
+        ), f"max_percentiles must be 1 dimensional, got {max_percentiles.ndim} dimensional"
+        assert (
+            min_percentiles.shape == max_percentiles.shape
+        ), f"min_percentiles and max_percentiles must have the same shape, got {min_percentiles.shape} and {max_percentiles.shape}"
 
         self.min_percentiles = min_percentiles
         self.max_percentiles = max_percentiles
