@@ -1,1 +1,1 @@
-from .array import *
+from .tensor import *
