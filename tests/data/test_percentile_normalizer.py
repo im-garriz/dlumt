@@ -3,7 +3,7 @@ import pytest
 import torch
 
 from dlumt.data.normalization import PercentilesNormalizer
-from dlumt.typing.array import *
+from dlumt.typing import *
 
 # pip install -e .
 

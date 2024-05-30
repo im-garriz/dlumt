@@ -12,7 +12,7 @@ FP32_TENSOR = Union[npt.NDArray[np.float32], torch.Tensor]
 A type alias representing either a NumPy array of dtype float32 or a PyTorch tensor.
 """
 
-def check_input_is_torch_or_numpy_array(x):
+def check_input_is_torch_or_numpy_array(x: FP32_TENSOR) -> None:
     """
     Check if the input is a NumPy array or a PyTorch tensor. If not,
     raises a TypeError.
