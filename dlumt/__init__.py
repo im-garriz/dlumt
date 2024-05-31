@@ -1,1 +1,1 @@
-from .core.custom_mlflow_logger import Custom_MLFlowLogger
+from .core.custom_mlflow_logger import Custom_PL_MLFlowLogger

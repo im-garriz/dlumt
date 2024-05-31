@@ -73,7 +73,7 @@ def apply_dihedral_transform(x: FP32_TENSOR, transformation_idx: int) -> FP32_TE
     Raises:
         AssertionError: If the input is not a valid numpy array or PyTorch tensor.
     """
-    check_input_is_torch_or_numpy_array(x)
+    check_tensor_is_FP32_torch_or_numpy_array(x)
     from_numpy = False
     if isinstance(x, np.ndarray):
         from_numpy = True

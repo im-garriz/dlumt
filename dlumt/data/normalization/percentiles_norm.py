@@ -68,7 +68,7 @@ class PercentilesNormalizer:
             if the input array is a torch tensor, and optionally the device if the input
             array is a torch tensor.
         """
-        check_input_is_torch_or_numpy_array(in_array)
+        check_tensor_is_FP32_torch_or_numpy_array(in_array)
         is_torch_tensor = False
         device = None
         if isinstance(in_array, torch.Tensor):
