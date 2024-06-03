@@ -23,16 +23,12 @@ def segmentation_logits_to_mask(y_hat_logits: FP32_TENSOR) -> FP32_TENSOR:
     Raises:
         ValueError: If the input tensor is not 2, 3, or 4-dimensional.
     """
-    check_input_is_torch_or_numpy_array(y_hat_logits)
+    check_tensor_is_FP32_torch_or_numpy_array(y_hat_logits)
 
     from_numpy = False
     if isinstance(y_hat_logits, np.ndarray):
         y_hat_logits = torch.tensor(y_hat_logits)
         from_numpy = True
-
-    assert (
-        y_hat_logits.type() == torch.float32
-    ), f"Input tensor must be of type FP32, get {y_hat_logits.type()}"
 
     ndim = y_hat_logits.ndim
     if ndim == 3:
@@ -44,7 +40,7 @@ def segmentation_logits_to_mask(y_hat_logits: FP32_TENSOR) -> FP32_TENSOR:
     elif ndim == 2:
         # No channel dim -> Adds it
         y_hat_logits = y_hat_logits.unsqueeze(0)
-        channels_dim = 1
+        channels_dim = 0
     else:
         raise ValueError(
             f"The input tensor must be 3-dimensional (NC, H, W), 4-dimensional (BS, NC, H, W) or 2-dimensional (H, W), only for the case of binary segmentation. {ndim} dimensional obtained."
@@ -59,7 +55,9 @@ def segmentation_logits_to_mask(y_hat_logits: FP32_TENSOR) -> FP32_TENSOR:
         )
     else:
         y_hat = torch.zeros_like(y_hat_logits, dtype=torch.long)
-        y_hat[y_hat_logits.sigmoid() > 0.5] = 1
+        print(y_hat)
+        y_hat[y_hat_logits.sigmoid() >= 0.5] = 1
+        print(y_hat)
 
     if ndim == 2:
         y_hat = y_hat[0, ...]
@@ -68,3 +66,12 @@ def segmentation_logits_to_mask(y_hat_logits: FP32_TENSOR) -> FP32_TENSOR:
         y_hat = y_hat.numpy()
 
     return y_hat
+
+if __name__ == '__main__':
+    
+
+    logits = 3*(torch.rand((25, 25), dtype=torch.float32) - 0.5)
+    mask = segmentation_logits_to_mask(logits)
+    
+    print(logits.max(), logits.min())
+    print(mask.max(), mask.min())

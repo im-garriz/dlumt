@@ -2,7 +2,7 @@ from typing import Tuple, Optional
 import numpy as np
 import torch
 
-from dlumt.typing.array import *
+from dlumt.typing import *
 
 
 class PercentilesNormalizer:

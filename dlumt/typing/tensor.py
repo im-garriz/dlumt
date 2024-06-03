@@ -33,7 +33,7 @@ def check_input_is_numpy_or_torch_tensor(x: TENSOR) -> None:
         )
 
 
-def check_type_torch(x: TENSOR, target_type: str) -> None:
+def check_type_torch(x: TENSOR, target_type: torch.TensorType) -> None:
     """
     Check if the PyTorch tensor is of the specified type.
 
@@ -44,7 +44,7 @@ def check_type_torch(x: TENSOR, target_type: str) -> None:
     Raises:
         TypeError: If the input tensor is not of the expected type.
     """
-    if isinstance(x, torch.Tensor) and x.type() != target_type:
+    if isinstance(x, torch.Tensor) and not isinstance(x, target_type):
         raise TypeError(f"Input must be of type {target_type}. Got {x.type()}.")
 
 
@@ -81,7 +81,8 @@ def check_tensor_is_FP32_torch_or_numpy_array(x: FP32_TENSOR) -> None:
         TypeError: If the input is neither a float32 NumPy array nor a PyTorch FloatTensor.
     """
     check_input_is_numpy_or_torch_tensor(x)
-    check_type_torch(x, torch.float)
+    check_type_torch(x, torch.FloatTensor)
+        
     check_type_numpy(x, np.float32)
 
 
@@ -103,5 +104,5 @@ def check_tensor_is_INT64_torch_or_numpy_array(x: INT64_TENSOR) -> None:
         TypeError: If the input is neither an int64 NumPy array nor a PyTorch LongTensor.
     """
     check_input_is_numpy_or_torch_tensor(x)
-    check_type_torch(x, torch.long)
+    check_type_torch(x, torch.LongTensor)
     check_type_numpy(x, np.int64)
