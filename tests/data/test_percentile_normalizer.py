@@ -53,7 +53,7 @@ class TestPercentilesNormalizer:
     @pytest.mark.parametrize(
         "x,is_torch_tensor,device",
         [
-            (255 * np.random.rand(3, 8, 8), False, None),
+            (255 * np.random.rand(3, 8, 8).astype(np.float32), False, None),
             (torch.rand(3, 8, 8), True, torch.device("cpu")),
             (torch.rand(3, 8, 8).to("cuda:0"), True, torch.device("cuda:0")),
         ],

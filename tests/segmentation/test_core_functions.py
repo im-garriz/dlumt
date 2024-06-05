@@ -17,7 +17,7 @@ class TestSegmentationLogitsToMask:
         ],
     )
     def test_raises_exception_when_tensor_not_FP32(self, x: FP32_TENSOR) -> None:
-        with pytest.raises(AssertionError):
+        with pytest.raises(TypeError):
             _ = segmentation_logits_to_mask(x)
 
     @pytest.mark.parametrize(
@@ -31,7 +31,7 @@ class TestSegmentationLogitsToMask:
     def test_raises_exception_when_input_not_2_3_or_4_dimensional(
         self, x: FP32_TENSOR
     ) -> None:
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             _ = segmentation_logits_to_mask(x)
 
     @pytest.mark.parametrize(

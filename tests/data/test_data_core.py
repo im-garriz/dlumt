@@ -64,7 +64,7 @@ class TestGetPatchesOriginsFromTileShape:
 class TestApplyDihedralTransforms:
 
     def test_idx_0_gives_same_tensor(self) -> None:
-        x = np.random.rand(1, 32, 32)
+        x = np.random.rand(1, 32, 32).astype(np.float32)
         x_dihedral = apply_dihedral_transform(x, 0)
 
         assert np.alltrue(x == x_dihedral)
@@ -75,7 +75,7 @@ class TestApplyDihedralTransforms:
         assert torch.all(x == x_dihedral)
 
     def test_idx_1_works(self) -> None:
-        x = np.random.rand(1, 32, 32)
+        x = np.random.rand(1, 32, 32).astype(np.float32)
         x_dihedral = apply_dihedral_transform(x, 1)
 
         assert np.alltrue(np.flip(x, -1) == x_dihedral)
@@ -86,7 +86,7 @@ class TestApplyDihedralTransforms:
         assert torch.all(x.flip(-1) == x_dihedral)
 
     def test_idx_1_works_with_4D(self) -> None:
-        x = np.random.rand(4, 1, 32, 32)
+        x = np.random.rand(4, 1, 32, 32).astype(np.float32)
         x_dihedral = apply_dihedral_transform(x, 1)
 
         assert np.alltrue(np.flip(x, -1) == x_dihedral)
