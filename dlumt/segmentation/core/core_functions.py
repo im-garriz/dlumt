@@ -55,23 +55,12 @@ def segmentation_logits_to_mask(y_hat_logits: FP32_TENSOR) -> FP32_TENSOR:
         )
     else:
         y_hat = torch.zeros_like(y_hat_logits, dtype=torch.long)
-        print(y_hat)
         y_hat[y_hat_logits.sigmoid() >= 0.5] = 1
-        print(y_hat)
 
     if ndim == 2:
         y_hat = y_hat[0, ...]
 
     if from_numpy:
-        y_hat = y_hat.numpy()
+        y_hat = y_hat.numpy().astype(np.long)
 
     return y_hat
-
-if __name__ == '__main__':
-    
-
-    logits = 3*(torch.rand((25, 25), dtype=torch.float32) - 0.5)
-    mask = segmentation_logits_to_mask(logits)
-    
-    print(logits.max(), logits.min())
-    print(mask.max(), mask.min())
