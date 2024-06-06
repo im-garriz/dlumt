@@ -1,4 +1,4 @@
-from typing import Dict, Union, List, Optional
+from typing import Dict, Union, List, Optional, Tuple
 import segmentation_models_pytorch as smp
 import torch
 
@@ -48,8 +48,10 @@ def calc_metrics_multiclass(
     return metrics
 
 
-def calc_metrics_single_class(
-    y_hat: INT64_TENSOR, y: INT64_TENSOR, ignore_index: Optional[int] = None,
+def calc_metrics_binary(
+    y_hat: INT64_TENSOR,
+    y: INT64_TENSOR,
+    ignore_index: Optional[int] = None,
 ) -> Dict[str, torch.Tensor]:
 
     check_tensor_is_INT64_torch_tensor(y)
@@ -65,11 +67,16 @@ def calc_metrics_single_class(
         y.shape[1] == 1
     ), f"The shape of the input tensors must be of the type (N, 1, H, W), got {y.shape}"
 
-    tp, fp, fn, tn = smp.metrics.get_stats(y_hat, y, mode="binary", ignore_index=ignore_index)
+    tp, fp, fn, tn = smp.metrics.get_stats(
+        y_hat, y, mode="binary", ignore_index=ignore_index
+    )
 
     metrics = get_metrics_macro(tp, fp, fn, tn)
 
-    return metrics
+    return {
+        metric_name.replace("macro", "binary"): value
+        for metric_name, value in metrics.items()
+    }
 
 
 def get_metrics_macro(
@@ -77,7 +84,6 @@ def get_metrics_macro(
     fp: Tuple[torch.LongTensor],
     fn: Tuple[torch.LongTensor],
     tn: Tuple[torch.LongTensor],
-    from_binary: Optional[bool] = False,
 ) -> Dict[str, torch.Tensor]:
 
     metrics = {}
@@ -172,6 +178,7 @@ def get_metrics_macro(
             )
         }
     )
+
     metrics.update(
         {
             "macro_negative_likelihood_ratio": smp.metrics.negative_likelihood_ratio(
@@ -179,11 +186,5 @@ def get_metrics_macro(
             )
         }
     )
-
-    if from_binary:
-        return {
-            metric.replace("macro", "binary"): value
-            for metric, value in metrics.items()
-        }
 
     return metrics
