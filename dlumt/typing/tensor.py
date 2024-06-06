@@ -1,4 +1,5 @@
-from typing import Union, List
+from typing import Union, List, TypeAlias
+
 import numpy as np
 import numpy.typing as npt
 import torch
@@ -9,10 +10,12 @@ __all__ = [
     "check_tensor_is_FP32_torch_or_numpy_array",
     "INT64_TENSOR",
     "check_tensor_is_INT64_torch_or_numpy_array",
+    
+    "check_tensor_is_INT64_torch_tensor"
 ]
 
 
-TENSOR = Union[np.array, torch.Tensor]
+TENSOR: TypeAlias = Union[np.array, torch.Tensor]
 """
 A type alias representing either a NumPy array or a PyTorch tensor.
 """
@@ -29,7 +32,23 @@ def check_input_is_numpy_or_torch_tensor(x: TENSOR) -> None:
     """
     if not isinstance(x, np.ndarray) and not isinstance(x, torch.Tensor):
         raise TypeError(
-            f"Input must be a NumPy array or a PyTorch tensor. Got {type(x)}."
+            f"Input must be a NumPy array or a Torch tensor. Got {type(x)}."
+        )
+        
+
+def check_input_is_torch_tensor(x: TENSOR) -> None:
+    """
+    Check if the input is a PyTorch tensor.
+
+    Args:
+        x (TENSOR): Input object to be checked.
+
+    Raises:
+        TypeError: If the input is not a PyTorch tensor.
+    """
+    if not isinstance(x, torch.Tensor):
+        raise TypeError(
+            f"Input must be Torch tensor. Got {type(x)}."
         )
 
 
@@ -45,11 +64,9 @@ def check_type_torch(x: TENSOR, target_types: List[torch.TensorType]) -> None:
         TypeError: If the input tensor is not of the expected type.
     """
     if isinstance(x, torch.Tensor):
-        for type_ in target_types:
-            if isinstance(x, type_):
-                return
-
-        raise TypeError(f"Input must be of type {target_types}. Got {x.type()}.")
+        # for type_ in target_types:
+        if not any(isinstance(x, type_) for type_ in target_types):
+            raise TypeError(f"Input must be of type {target_types}. Got {x.type()}.")
 
 
 def check_type_numpy(x: TENSOR, target_type: np.dtype) -> None:
@@ -67,7 +84,7 @@ def check_type_numpy(x: TENSOR, target_type: np.dtype) -> None:
         raise TypeError(f"Input must be of type {target_type}. Got {x.dtype}.")
 
 
-FP32_TENSOR = Union[
+FP32_TENSOR: TypeAlias = Union[
     npt.NDArray[np.float32], Union[torch.FloatTensor, torch.cuda.FloatTensor]
 ]
 """
@@ -90,7 +107,7 @@ def check_tensor_is_FP32_torch_or_numpy_array(x: FP32_TENSOR) -> None:
     check_type_numpy(x, np.float32)
 
 
-INT64_TENSOR = Union[
+INT64_TENSOR: TypeAlias = Union[
     npt.NDArray[np.int64], Union[torch.LongTensor, torch.cuda.LongTensor]
 ]
 """
@@ -110,3 +127,18 @@ def check_tensor_is_INT64_torch_or_numpy_array(x: INT64_TENSOR) -> None:
     check_input_is_numpy_or_torch_tensor(x)
     check_type_torch(x, [torch.LongTensor, torch.cuda.LongTensor])
     check_type_numpy(x, np.int64)
+    
+    
+def check_tensor_is_INT64_torch_tensor(x: INT64_TENSOR) -> None:
+    """
+    Check if the input is an int64 PyTorch tensor (LongTensor or cuda.LongTensor).
+
+    Args:
+        x (INT64_TENSOR): Input tensor to be checked.
+
+    Raises:
+        TypeError: If the input is not a PyTorch tensor or is not of type LongTensor or cuda.LongTensor.
+    """
+    check_input_is_torch_tensor(x)
+    check_type_torch(x, [torch.LongTensor, torch.cuda.LongTensor])
+    
